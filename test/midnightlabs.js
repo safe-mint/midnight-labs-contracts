@@ -103,6 +103,38 @@ contract('MidnightLabs', async (accounts) => {
     }
 
     assert.equal(errorReason, "MINT_TOO_LARGE", "Mint should fail if more than MAX_TOKENS are minted")
-
   });
+
+  it('cant #adminMint the existing collection item', async () => {
+    const itemId = 1;
+    const amountTokens = 1;
+    try {
+      await contract.adminMint(accounts[0], 1, 1);
+    } catch (err) {
+      errorReason = getErrorReason(err);
+    }
+    assert.equal(errorReason, "CANNOT_MINT_EXISTING_TOKEN_ID", "Cannot #adminMint from existing collection")
+  })
+
+  it('can #adminMint a new item in the collection', async () => {
+    const mintTo = accounts[1];
+    const itemId = 333;
+    const amountTokens = 5000;
+    let errorReason = "";
+    await contract.adminMint(mintTo, itemId, amountTokens);
+    const newSupply = await contract.totalSupply(itemId);
+    const newBalance = await contract.balanceOf(mintTo, itemId);
+    assert.equal(newSupply, amountTokens, "#adminMint did not mint correctly")
+    assert.equal(newBalance, amountTokens, "#adminMint did not mint correctly")
+
+    // check that we can't mint additional tokens after calling #adminMint
+    try {
+      await contract.adminMint(mintTo, itemId, amountTokens);
+    } catch (err) {
+      errorReason = getErrorReason(err);
+    }
+
+    assert.equal(errorReason, "CANNOT_MINT_EXISTING_TOKEN_ID", "Cannot #adminMint from existing collection")
+  });
+
 });
