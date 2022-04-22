@@ -71,8 +71,7 @@ contract('MidnightLabs', async (accounts) => {
     let errorReason = "";
     try {
       await contract.mint(hash, rightSignature, {from: mintAccount});
-    } catch (err)
-    {
+    } catch (err) {
       errorReason = getErrorReason(err);
     }
 
@@ -94,6 +93,8 @@ contract('MidnightLabs', async (accounts) => {
 
     // gift exactly 2000 tokens
     await contract.gift([giftAccount1, giftAccount2], 900)
+    const newSupply2 = await contract.totalSupply(1);
+    assert.equal(newSupply2, 2000, "Contract did not gift correctly")
 
     // gift one more token, this should fail as it it greater than MAX_TOKENS
     try {
