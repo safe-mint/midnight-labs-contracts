@@ -21,9 +21,9 @@ contract MidnightLabs is ERC1155Supply, Ownable, Pausable {
     address private signerAddress = 0xabcB40408a94E94f563d64ded69A75a3098cBf59;
 
     // Used to ensure each new token id can only be minted once by the owner
-    mapping (uint256 => bool) public collectionMinted;
-    mapping (uint256 => string) public tokenURI;
-    mapping (address => bool) public hasAddressMinted;
+    mapping(uint256 => bool) public collectionMinted;
+    mapping(uint256 => string) public tokenURI;
+    mapping(address => bool) public hasAddressMinted;
 
     constructor(
         string memory uriBase,
@@ -49,7 +49,10 @@ contract MidnightLabs is ERC1155Supply, Ownable, Pausable {
     /**
      * Sets a URI for a specific token id.
      */
-    function setURI(string memory newTokenURI, uint256 tokenId) public onlyOwner {
+    function setURI(string memory newTokenURI, uint256 tokenId)
+        public
+        onlyOwner
+    {
         tokenURI[tokenId] = newTokenURI;
     }
 
@@ -73,8 +76,14 @@ contract MidnightLabs is ERC1155Supply, Ownable, Pausable {
         _unpause();
     }
 
-    function verifyAddressSigner(bytes32 messageHash, bytes memory signature) private view returns (bool) {
-        return signerAddress == messageHash.toEthSignedMessageHash().recover(signature);
+    function verifyAddressSigner(bytes32 messageHash, bytes memory signature)
+        private
+        view
+        returns (bool)
+    {
+        return
+            signerAddress ==
+            messageHash.toEthSignedMessageHash().recover(signature);
     }
 
     function hashMessage(address sender) private pure returns (bytes32) {
@@ -86,22 +95,30 @@ contract MidnightLabs is ERC1155Supply, Ownable, Pausable {
      */
     function mint(bytes32 messageHash, bytes calldata signature) external {
         require(totalSupply(TOKEN_ID) < MAX_TOKENS, "MAX_TOKEN_SUPPLY_REACHED");
-        require(hasAddressMinted[msg.sender] == false, "ADDRESS_HAS_ALREADY_MINTED_TOKEN");
+        require(
+            hasAddressMinted[msg.sender] == false,
+            "ADDRESS_HAS_ALREADY_MINTED_TOKEN"
+        );
         require(hashMessage(msg.sender) == messageHash, "MESSAGE_INVALID");
-        require(verifyAddressSigner(messageHash, signature), "SIGNATURE_VALIDATION_FAILED");
+        require(
+            verifyAddressSigner(messageHash, signature),
+            "SIGNATURE_VALIDATION_FAILED"
+        );
 
         hasAddressMinted[msg.sender] = true;
 
         _mint(msg.sender, TOKEN_ID, 1, "");
-
     }
 
     /**
      * @notice Allow minting of any future tokens as desired as part of the same collection,
      * which can then be transferred to another contract for distribution purposes
      */
-    function adminMint(address account, uint256 id, uint256 amount) public onlyOwner
-    {
+    function adminMint(
+        address account,
+        uint256 id,
+        uint256 amount
+    ) public onlyOwner {
         require(!collectionMinted[id], "CANNOT_MINT_EXISTING_TOKEN_ID");
         require(id != TOKEN_ID, "CANNOT_MINT_EXISTING_TOKEN_ID");
         collectionMinted[id] = true;
@@ -111,8 +128,15 @@ contract MidnightLabs is ERC1155Supply, Ownable, Pausable {
     /**
      * @notice Allow owner to send `mintNumber` tokens without cost to multiple addresses
      */
-    function gift(address[] calldata receivers, uint256 numberOfTokens) external onlyOwner {
-        require((totalSupply(TOKEN_ID) + (receivers.length * numberOfTokens)) <= MAX_TOKENS, "MINT_TOO_LARGE");
+    function gift(address[] calldata receivers, uint256 numberOfTokens)
+        external
+        onlyOwner
+    {
+        require(
+            (totalSupply(TOKEN_ID) + (receivers.length * numberOfTokens)) <=
+                MAX_TOKENS,
+            "MINT_TOO_LARGE"
+        );
 
         for (uint256 i = 0; i < receivers.length; i++) {
             _mint(receivers[i], TOKEN_ID, numberOfTokens, "");
@@ -136,14 +160,19 @@ contract MidnightLabs is ERC1155Supply, Ownable, Pausable {
     /**
      * @notice When the contract is paused, all token transfers are prevented in case of emergency.
      */
-    function _beforeTokenTransfer(address operator, address from, address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)
-        internal
-        whenNotPaused
-        override
-    {
+    function _beforeTokenTransfer(
+        address operator,
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) internal override whenNotPaused {
         super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
     }
 
+    // I dont think this contract will ever hold funds. Currently, this contracy
+    // cant even accept eth, so I feel this function is not needed.
     function withdraw() external onlyOwner {
         require(address(this).balance > 0, "BALANCE_IS_ZERO");
         payable(msg.sender).transfer(address(this).balance);
