@@ -6,6 +6,11 @@ function getErrorReason(error) {
 }
 
 contract('MidnightLabs', async (accounts) => {
+    // Pretty sure you can do something like:
+    // signature = web3.eth.accounts.sign(web3.utils.soliditySha3(minter_address), "private_key")
+    //
+    // I would also like to see a test where you test the pause/unpause
+    //
     //
     // The method #personal_sign is not supported in Truffle/Ganache!
     // ### The following line will fail ###
