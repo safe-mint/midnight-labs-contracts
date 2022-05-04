@@ -138,4 +138,35 @@ contract('MidnightLabs', async (accounts) => {
     assert.equal(errorReason, "CANNOT_MINT_EXISTING_TOKEN_ID", "Cannot #adminMint from existing collection")
   });
 
+  it('pauses/unpauses correctly', async () => {
+    const fromAccount = accounts[0]
+    const toAccount = accounts[1]
+    const tokenId = 1;
+    const amountToTransfer = 1;
+    let toBalance
+    await contract.gift([fromAccount], 10)
+    await contract.safeTransferFrom(fromAccount, toAccount, tokenId, amountToTransfer, "0x00")
+
+    toBalance = await contract.balanceOf(toAccount, tokenId);
+    assert.equal(toBalance, 1, "#safeTransferFrom did not run correctly")
+
+    // pause contract
+    await contract.pause()
+    try {
+      await contract.safeTransferFrom(fromAccount, toAccount, tokenId, amountToTransfer, "0x00");
+    } catch (err) {
+      errorReason = getErrorReason(err);
+    }
+
+    assert.equal(errorReason, "Pausable: paused", "contract is allowing transfers")
+    toBalance = await contract.balanceOf(toAccount, tokenId);
+    assert.equal(toBalance, 1, "account must have only 1 token")
+
+    // unpause contract
+    await contract.unpause()
+    await contract.safeTransferFrom(fromAccount, toAccount, tokenId, amountToTransfer, "0x00");
+    toBalance = await contract.balanceOf(toAccount, tokenId);
+    assert.equal(toBalance, 2, "account must have 2 tokens")
+  });
+
 });
