@@ -1,0 +1,28 @@
+{
+  "name": "midnight-labs-contracts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/safe-mint/midnight-labs-contracts.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/safe-mint/midnight-labs-contracts/issues"
+  },
+  "homepage": "https://github.com/safe-mint/midnight-labs-contracts#readme",
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.6.0",
+    "dotenv": "^16.0.0",
+    "truffle-hdwallet-provider": "^1.0.17",
+    "web3": "^1.7.3"
+  }
+}
