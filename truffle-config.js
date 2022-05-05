@@ -70,7 +70,8 @@ module.exports = {
         return new HDWalletProvider([MAINNET_PRIVATE_KEY], mainnetNodeUrl);
       },
       network_id: 1,
-      gasPrice: web3.utils.toWei('80', 'gwei')
+      gas: 3000000,
+      gasPrice: web3.utils.toWei('60', 'gwei')
     },
     // Another network with more advanced options...
     // advanced: {
