@@ -1,6 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
+/***
+ *            _     _       _       _     _       __       _         
+ *      /\/\ (_) __| |_ __ (_) __ _| |__ | |_    / /  __ _| |__  ___ 
+ *     /    \| |/ _` | '_ \| |/ _` | '_ \| __|  / /  / _` | '_ \/ __|
+ *    / /\/\ \ | (_| | | | | | (_| | | | | |_  / /__| (_| | |_) \__ \
+ *    \/    \/_|\__,_|_| |_|_|\__, |_| |_|\__| \____/\__,_|_.__/|___/
+ *                            |___/                                  
+ */
+
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
