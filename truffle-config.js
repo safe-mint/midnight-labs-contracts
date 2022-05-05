@@ -1,11 +1,14 @@
 const HDWalletProvider = require("truffle-hdwallet-provider");
 require("dotenv").config();
+web3 = require('web3')
 
 const MNEMONIC = process.env.MNEMONIC;
 const INFURA_KEY = process.env.INFURA_KEY;
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
+const MAINNET_PRIVATE_KEY = process.env.MAINNET_PRIVATE_KEY;
 
 const rinkebyNodeUrl = "https://rinkeby.infura.io/v3/" + INFURA_KEY;
+const mainnetNodeUrl = "https://mainnet.infura.io/v3/" + INFURA_KEY;
 
 /**
  * Use this file to configure your truffle project. It's seeded with some
@@ -61,6 +64,13 @@ module.exports = {
       },
       gas: 5000000,
       network_id: 4,
+    },
+    live: {
+      provider: function () {
+        return new HDWalletProvider([MAINNET_PRIVATE_KEY], mainnetNodeUrl);
+      },
+      network_id: 1,
+      gasPrice: web3.utils.toWei('80', 'gwei')
     },
     // Another network with more advanced options...
     // advanced: {
